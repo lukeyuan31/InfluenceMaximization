@@ -16,21 +16,6 @@ def timer(t):
 
     exit(0)
 
-def inputseed(seedpath):
-    try:
-        f=open(seedpath,'r')
-        txt=f.readlines()
-        #print txt
-        SeedSet=[]
-        for line in txt:
-           #print line
-           SeedSet.append(int(line))
-        print 'The seed set is',SeedSet
-        return SeedSet
-    except IOError:
-        print 'Error: file not found'
-    finally:
-        f.close()
 def input(path):
     try:
         f=open(path,'r')
@@ -121,6 +106,7 @@ def find_active_neighbor(seed,AdjaceMat,ActivityState):
 
 """
 A model of DegreeDiscountIC sample
+"""
 def DegreeDiscountIC(AdjaceMat,k):
     S=[] #initialize the set of the output
     #dv=np.zeros(Nodenum) #initialize the set of degrees of each node
@@ -178,7 +164,6 @@ def DegreeDiscountIC(AdjaceMat,k):
     return S
 
 
-"""
 
 
 """
@@ -259,7 +244,7 @@ if __name__=='__main__':
 
     AP=argparse.ArgumentParser()
     AP.add_argument('-i',help='The path of the social network file', dest='path')
-    AP.add_argument('-s',help='The path of the seed set file',dest='seedpath')
+    AP.add_argument('-k',type=int,help='The path of the seed set file',dest='size')
     AP.add_argument('-m',help='The diffusion model',dest='model')
     AP.add_argument('-b',type=int,help='0 or 1. set to 0, then the termination condition is not changed, to 1 then the '
                               'maximal time budget specifies the termination condition.',dest='type')
@@ -268,7 +253,7 @@ if __name__=='__main__':
 
     args=AP.parse_args()
     path=args.path
-    seedpath=args.seedpath
+    size=args.size
     model=args.model
     type=args.type
     #timeout=args.type
@@ -277,7 +262,8 @@ if __name__=='__main__':
    #timer=threading.Timer(10,stop())
    # timer.start()
     AdjaceMat,Nodenum=input(path)
-    SeedSet=inputseed(seedpath)
+    #SeedSet=inputseed(seedpath)
+    SeedSet=DegreeDiscountIC(AdjaceMat,size)
     if type==0:
       timer = threading.Thread(target=timer, args=(timeout ,))
       timer.start()
